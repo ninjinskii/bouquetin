@@ -1,0 +1,12 @@
+version: "3.7"
+
+services:
+  builder:
+    build: .
+    container_name: bouquetin.njk.localhost
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - default
+    volumes:
+      - ./:/app
