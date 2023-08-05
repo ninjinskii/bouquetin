@@ -16,7 +16,7 @@ gomobile init
 ```
 
 Make sure the exported android package is named `core`.
-Make sure the `core` pacakge is initialized (cd core; go mod init core).
+Make sure the `core` package is initialized (`cd core; go mod init core`).
 
 Make sure you've installed Android NDK (can be done via Android Studio > tools > SDK manager > SDK tools > NDK)
 Make sure you've installed javac.
