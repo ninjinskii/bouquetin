@@ -1,12 +1,9 @@
 # Bouquetin
-Bouquetin is a offline CLI password manager.
+Bouquetin is a file manager.
 It will run on Windows, Linux natively, and Android via a bridge app.
 
 ## Run locally
 Go will be required on the host to build for now (sad).
-
-## Limitations
-Clipboard functionnality is not working in container (cause: no Display in containers).
 
 ## Build
 First, make sure gomobile is installed and in PATH:
