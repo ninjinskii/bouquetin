@@ -1,12 +1,14 @@
 package core
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 	"time"
 )
 
 const (
+	HTTP_TIMEOUT_SECONDS      = 10
 	HEADER_USER_ID            = "User-Id"
 	HEADER_PREFERRED_FILENAME = "Preferred-Filename"
 )
@@ -15,8 +17,7 @@ type HttpClient interface {
 	Get(url string, headers BqtHttpHeaders) string
 }
 
-type DefaultHttpClient struct {
-	Client *http.Client
+type GoHttpClient struct {
 }
 
 type BqtHttpHeaders struct {
@@ -24,19 +25,17 @@ type BqtHttpHeaders struct {
 	PreferredFilename string
 }
 
-func NewHttpClient() HttpClient {
-	return &DefaultHttpClient{
-		Client: &http.Client{
-			Timeout: 10 * time.Second,
-		},
-	}
-}
-
-func (client *DefaultHttpClient) Get(url string, headers BqtHttpHeaders) string {
+func (GoHttpClient) Get(url string, headers BqtHttpHeaders) string {
 	request, _ := http.NewRequest("GET", url, nil)
+	fmt.Println(headers)
 	request.Header.Set(HEADER_USER_ID, headers.UserId)
 	request.Header.Set(HEADER_PREFERRED_FILENAME, headers.PreferredFilename)
-	response, error := client.Client.Do(request)
+
+	client := &http.Client{
+		Timeout: HTTP_TIMEOUT_SECONDS * time.Second,
+	}
+
+	response, error := client.Do(request)
 
 	if error != nil {
 		panic(error)

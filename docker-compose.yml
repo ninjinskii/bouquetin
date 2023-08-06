@@ -1,12 +1,17 @@
 version: "3.7"
 
 services:
-  builder:
+  go:
     build: .
-    container_name: bouquetin.njk.localhost
+    container_name: bouquetin-builder.njk.localhost
     security_opt:
       - no-new-privileges:true
     networks:
       - default
     volumes:
       - ./:/app
+    environment:
+      - GOOS=linux
+      - GOARCH=amd64
+      # - BOUQUETIN_ID=1234-5678
+      # - BOUQUETIN_FILEPATH=./file.txt

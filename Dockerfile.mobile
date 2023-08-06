@@ -1,0 +1,55 @@
+# Build app for android (WIP)
+FROM golang:1.19.0-alpine
+
+WORKDIR /app
+
+RUN apk update \
+    && apk upgrade \
+    && apk add --no-cache \
+      libx11-dev \
+      gcc \
+      g++ \
+      musl \
+      wget \
+      unzip \
+      openjdk8-jre \
+      bash
+
+ARG HOME=/root
+ARG SDKMANAGER_HOME=$HOME/android_sdk/cmdline-tools/latest/bin/
+
+# Install SDK-Manager (Android tool to get Android SDK tools, notably NDK, needed for go to do its bindings)
+RUN wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip \
+    && mkdir $HOME/android_sdk \
+    && unzip -d $HOME/android_sdk commandlinetools-linux-8512546_latest.zip \
+    && rm commandlinetools-linux-8512546_latest.zip \
+    && mkdir $HOME/android_sdk/cmdline-tools/latest \
+    && mv $HOME/android_sdk/cmdline-tools/lib $HOME/android_sdk/cmdline-tools/latest \
+    && mv $HOME/android_sdk/cmdline-tools/bin $HOME/android_sdk/cmdline-tools/latest \
+    && mv $HOME/android_sdk/cmdline-tools/NOTICE.txt $HOME/android_sdk/cmdline-tools/latest \
+    && mv $HOME/android_sdk/cmdline-tools/source.properties $HOME/android_sdk/cmdline-tools/latest
+
+# Install NDK & SDK (run sdmkmanager --list to show available packages)
+RUN yes | $SDKMANAGER_HOME/sdkmanager --licenses \
+    && $SDKMANAGER_HOME/sdkmanager --list \
+    && yes | $SDKMANAGER_HOME/sdkmanager --install "ndk-bundle" "build-tools;33.0.0" \
+    && mkdir $HOME/Android $HOME/Android/Sdk \
+    && mv $HOME/android_sdk/build-tools $HOME/Android/Sdk/build-tools \
+    && mv $HOME/android_sdk/ndk-bundle $HOME/Android/Sdk/ndk-bundle
+   # && mv /root/android_sdk/ndk /root/Android/Sdk/ndk
+
+# Install gomobile tools
+ENV PATH="${PATH}:/root/go/bin"
+ENV ANDROID_HOME="/root/Android/Sdk"
+RUN go install golang.org/x/mobile/cmd/gomobile@latest \
+    && gomobile init
+
+# Build !
+COPY . .
+# androidapi 19 is optionnal. Only used when using ndk and not ndk-bundle
+RUN chmod 777 -R /root/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/bin
+RUN cd /app/core \
+  && go get golang.org/x/mobile/cmd/gobind \
+  && gomobile bind -v -o bqt.aar -target=android .
+
+# TODO: add linux / w build ? (if so use build.sh)

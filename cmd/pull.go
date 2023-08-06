@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const URL_PULL = "/pull"
+const URL_PULL = URL_BASE + "pull"
 
 // pullCmd represents the pull command
 var pullCmd = &cobra.Command{
@@ -40,7 +40,7 @@ func pull(cmd *cobra.Command, args []string) {
 	position, err := strconv.Atoi(historyPosition)
 	filepath := core.GetEnvironmentVariable(core.ENV_FILEPATH)
 	userId := core.GetEnvironmentVariable(core.ENV_USER_ID)
-	httpClient := core.NewHttpClient()
+	httpClient := &core.GoHttpClient{}
 	headers := core.BqtHttpHeaders{
 		UserId:            userId,
 		PreferredFilename: filepath, // TODO: get only filename instead of filepath
@@ -50,7 +50,10 @@ func pull(cmd *cobra.Command, args []string) {
 		position = 0
 	}
 
-	response = core.HttpClient.Get(httpClient, URL_PULL, headers)
+	response := core.HttpClient.Get(httpClient, URL_PULL, headers)
+	fmt.Println("userId")
+	fmt.Println(userId)
+	fmt.Println(response)
 
 	// get user id & filename -
 	// make a request with user-id & preferred-filename header -

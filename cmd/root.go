@@ -6,6 +6,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// TODO: adapt to production code
+const URL_BASE = "https://web:5000/"
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "bqt",
