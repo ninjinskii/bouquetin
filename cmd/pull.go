@@ -1,16 +1,15 @@
 package cmd
 
 import (
-	"fmt"
 	"ninjinski/bouquetin/core"
 	"strconv"
 
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
 const URL_PULL = URL_BASE + "pull"
 
-// pullCmd represents the pull command
 var pullCmd = &cobra.Command{
 	Use:   "pull",
 	Short: "Download the file",
@@ -38,29 +37,39 @@ func init() {
 func pull(cmd *cobra.Command, args []string) {
 	historyPosition, _ := cmd.Flags().GetString("history")
 	position, err := strconv.Atoi(historyPosition)
+	fileHandler := &core.GoFileHandler{}
 	filepath := core.GetEnvironmentVariable(core.ENV_FILEPATH)
-	userId := core.GetEnvironmentVariable(core.ENV_USER_ID)
-	httpClient := &core.GoHttpClient{}
-	headers := core.BqtHttpHeaders{
-		UserId:            userId,
-		PreferredFilename: filepath, // TODO: get only filename instead of filepath
-	}
+
+	headers := getHttpHeaders(fileHandler, filepath, position)
 
 	if err != nil {
 		position = 0
 	}
 
-	response := core.HttpClient.Get(httpClient, URL_PULL, headers)
-	fmt.Println("userId")
-	fmt.Println(userId)
-	fmt.Println(response)
+	httpClient := &core.GoHttpClient{}
+	response, statusCode := core.HttpClient.Get(httpClient, URL_PULL, headers)
 
-	// get user id & filename -
-	// make a request with user-id & preferred-filename header -
-	// download file as http content by sending request -
-	// read file from http content -
-	// create/replace the .old file
-	// replace the current file with the new one
+	if statusCode == 200 {
+		writeBackupFile(fileHandler, filepath)
+		fileHandler.WriteFile(filepath, response)
+		color.Green("PULL: SUCCESS")
+	}
+}
 
-	fmt.Println(position)
+func getHttpHeaders(fileHandler core.FileHandler, filepath string, position int) core.BqtHttpHeaders {
+	filename := core.FileHandler.GetFilename(fileHandler, filepath)
+
+	userId := core.GetEnvironmentVariable(core.ENV_USER_ID)
+	headers := core.BqtHttpHeaders{
+		UserId:            userId,
+		PreferredFilename: filename,
+		Position:          position,
+	}
+
+	return headers
+}
+
+func writeBackupFile(fileHandler core.FileHandler, filepath string) {
+	backupPath := filepath + ".old"
+	fileHandler.CopyFile(filepath, backupPath)
 }

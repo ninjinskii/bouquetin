@@ -7,7 +7,7 @@ import (
 )
 
 // TODO: adapt to production code
-const URL_BASE = "https://web:5000/"
+const URL_BASE = "https://bouquetin.njk.localhost/"
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{

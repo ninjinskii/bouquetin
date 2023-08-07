@@ -3,11 +3,13 @@ package core
 import (
 	"io"
 	"os"
+	files "path/filepath"
 )
 
 type FileHandler interface {
 	WriteFile(filepath string, content string)
 	CopyFile(sourcePath string, destinationPath string)
+	GetFilename(filepath string) string
 }
 
 type GoFileHandler struct {
@@ -57,4 +59,8 @@ func (GoFileHandler) CopyFile(sourcePath string, destinationPath string) {
 	if error != nil {
 		panic(error)
 	}
+}
+
+func (GoFileHandler) GetFilename(filepath string) string {
+	return files.Base(filepath)
 }

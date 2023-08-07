@@ -1,6 +1,8 @@
 package core
 
-import "os"
+import (
+	"os"
+)
 
 const (
 	ENV_FILEPATH = "BOUQUETIN_FILEPATH"
@@ -9,4 +11,12 @@ const (
 
 func GetEnvironmentVariable(key string) string {
 	return os.Getenv(key)
+}
+
+func SetEnvironmentVariable(key string, value string) {
+	error := os.Setenv(key, value)
+
+	if error != nil {
+		panic(error)
+	}
 }
