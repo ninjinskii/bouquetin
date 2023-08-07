@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"ninjinski/bouquetin/core"
+	"strconv"
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
@@ -46,7 +47,7 @@ func push(cmd *cobra.Command, args []string) {
 	}
 
 	color.Red("PUSH: ERROR ->")
-	color.Red(string(statusCode))
+	color.Red(strconv.Itoa(int(statusCode)))
 	fmt.Println(response)
 }
 

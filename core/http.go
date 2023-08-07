@@ -2,11 +2,13 @@ package core
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"mime/multipart"
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"time"
 )
 
@@ -14,6 +16,7 @@ const (
 	HTTP_TIMEOUT_SECONDS      = 10
 	HEADER_USER_ID            = "User-Id"
 	HEADER_PREFERRED_FILENAME = "Preferred-Filename"
+	HEADER_POSITION           = "Position"
 	HEADER_CONTENT_TYPE       = "Content-Type"
 )
 
@@ -34,7 +37,7 @@ type BqtHttpHeaders struct {
 func (GoHttpClient) Get(url string, headers BqtHttpHeaders) (string, int32) {
 	request, _ := http.NewRequest("GET", url, nil)
 	setHttpHeaders(request, headers)
-
+	fmt.Println(request.Header)
 	client := &http.Client{
 		Timeout: HTTP_TIMEOUT_SECONDS * time.Second,
 	}
@@ -95,4 +98,5 @@ func (GoHttpClient) Multipart(url string, path string, headers BqtHttpHeaders) (
 func setHttpHeaders(request *http.Request, headers BqtHttpHeaders) {
 	request.Header.Set(HEADER_USER_ID, headers.UserId)
 	request.Header.Set(HEADER_PREFERRED_FILENAME, headers.PreferredFilename)
+	request.Header.Set(HEADER_POSITION, strconv.Itoa(headers.Position))
 }

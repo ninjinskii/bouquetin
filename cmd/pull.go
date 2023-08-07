@@ -32,6 +32,7 @@ func pull(cmd *cobra.Command, args []string) {
 	filepath := core.GetEnvironmentVariable(core.ENV_FILEPATH)
 
 	headers := getHttpHeaders(fileHandler, filepath, position)
+	fmt.Println(headers)
 
 	if err != nil {
 		position = 0
@@ -48,7 +49,7 @@ func pull(cmd *cobra.Command, args []string) {
 	}
 
 	color.Red("PULL: ERROR ->")
-	color.Red(string(statusCode))
+	color.Red(strconv.Itoa(int(statusCode)))
 	fmt.Println(response)
 }
 

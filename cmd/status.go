@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"ninjinski/bouquetin/core"
+	"strconv"
 	"time"
 
 	"github.com/fatih/color"
@@ -65,7 +66,7 @@ func status(cmd *cobra.Command, args []string) {
 	}
 
 	color.Red("STATUS: ERROR ->")
-	color.Red(string(statusCode))
+	color.Red(strconv.Itoa(int(statusCode)))
 	fmt.Println(response)
 }
 
