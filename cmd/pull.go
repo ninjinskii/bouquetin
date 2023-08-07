@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"ninjinski/bouquetin/core"
 	"strconv"
 
@@ -53,7 +54,12 @@ func pull(cmd *cobra.Command, args []string) {
 		writeBackupFile(fileHandler, filepath)
 		fileHandler.WriteFile(filepath, response)
 		color.Green("PULL: SUCCESS")
+		return
 	}
+
+	color.Red("PULL: ERROR ->")
+	color.Red(string(statusCode))
+	fmt.Println(response)
 }
 
 func getHttpHeaders(fileHandler core.FileHandler, filepath string, position int) core.BqtHttpHeaders {

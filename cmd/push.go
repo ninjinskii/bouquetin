@@ -56,6 +56,7 @@ func push(cmd *cobra.Command, args []string) {
 	}
 
 	color.Red("PUSH: ERROR ->")
+	color.Red(string(statusCode))
 	fmt.Println(response)
 }
 

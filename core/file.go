@@ -1,6 +1,8 @@
 package core
 
 import (
+	"crypto/sha1"
+	"encoding/hex"
 	"io"
 	"os"
 	files "path/filepath"
@@ -10,6 +12,7 @@ type FileHandler interface {
 	WriteFile(filepath string, content string)
 	CopyFile(sourcePath string, destinationPath string)
 	GetFilename(filepath string) string
+	Digest(filepath string) string
 }
 
 type GoFileHandler struct {
@@ -63,4 +66,16 @@ func (GoFileHandler) CopyFile(sourcePath string, destinationPath string) {
 
 func (GoFileHandler) GetFilename(filepath string) string {
 	return files.Base(filepath)
+}
+
+func (GoFileHandler) Digest(filepath string) string {
+	fileBuffer, error := os.ReadFile(filepath)
+
+	if error != nil {
+		panic(error)
+	}
+
+	hash := sha1.Sum(fileBuffer)
+	hashArray := hash[:]
+	return hex.EncodeToString(hashArray)
 }
