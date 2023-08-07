@@ -29,16 +29,6 @@ var statusCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(statusCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// statusCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// statusCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
 func status(cmd *cobra.Command, args []string) {
@@ -77,11 +67,6 @@ func status(cmd *cobra.Command, args []string) {
 	color.Red("STATUS: ERROR ->")
 	color.Red(string(statusCode))
 	fmt.Println(response)
-	// convertir le json en struct
-	// afficher la date de création du user
-	// afficher la date de dernier upload pour ce user
-	// vérifier que le fichier local équivaut au fichier distant à l'aide du hash
-	// en conséquence, indiquer si on est sync, sinon indiquer de pull ou push
 }
 
 func formatDate(date int64) string {
